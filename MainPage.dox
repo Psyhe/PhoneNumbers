@@ -18,4 +18,6 @@ W ramach pierwszej części zadania zaimplementowano interfejs phone_forward.h, 
 - usuwanie ciągu numerów telefonów;
 - odczytanie konkretnego numeru z ciągu numerów.
 
+W ramach drugiej części zaimplementowano ponadto funkcję phfwdReverse oraz
+odpowiednio zmodyfikowano funkcje opisane powyżej.
 */

@@ -1,7 +1,7 @@
 /** @file
  * Interfejs klasy przechowującej przekierowania numerów telefonicznych
  *
- * @author Marcin Peczarski <marpe@mimuw.edu.pl>
+ * @author Marcin Peczarski, Maria Wysogląd (wprowadzono modyfikacje komentarzy)
  * @copyright Uniwersytet Warszawski
  * @date 2022
  */
@@ -26,7 +26,7 @@ typedef struct PhoneForward PhoneForward;
  */
 struct PhoneNumbers;
 /**
- * Tworzy typ PhoneForward.
+ * Tworzy typ PhoneNumbers.
  */
 typedef struct PhoneNumbers PhoneNumbers;
 
@@ -83,13 +83,13 @@ void phfwdRemove(PhoneForward *pf, char const *num);
  * @param[in] pf  – wskaźnik na strukturę przechowującą przekierowania numerów;
  * @param[in] num – wskaźnik na napis reprezentujący numer.
  * @return Wskaźnik na strukturę przechowującą ciąg numerów lub NULL, gdy nie
- *         udało się alokować pamięci.
+ *         udało się alokować pamięci lub pf jest równy NULL.
  */
 PhoneNumbers * phfwdGet(PhoneForward const *pf, char const *num);
 
 /** @brief Wyznacza przekierowania na dany numer.
  * Wyznacza następujący ciąg numerów: jeśli istnieje numer @p x, taki że wynik
- * wywołania @p phfwdGet z numerem @p x zawiera numer @p num, to numer @p x
+ * @p x jest prefiksem dla przekierowania @p num, to
  * należy do wyniku wywołania @ref phfwdReverse z numerem @p num. Dodatkowo ciąg
  * wynikowy zawsze zawiera też numer @p num. Wynikowe numery są posortowane
  * leksykograficznie i nie mogą się powtarzać. Jeśli podany napis nie
