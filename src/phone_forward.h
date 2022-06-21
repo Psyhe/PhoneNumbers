@@ -1,7 +1,7 @@
 /** @file
  * Interfejs klasy przechowującej przekierowania numerów telefonicznych
  *
- * @author Marcin Peczarski, Maria Wysogląd (wprowadzono modyfikacje komentarzy)
+ * @authors Marcin Peczarski, Maria Wysogląd (wprowadzono modyfikacje komentarzy)
  * @copyright Uniwersytet Warszawski
  * @date 2022
  */
@@ -118,5 +118,15 @@ void phnumDelete(PhoneNumbers *pnum);
  *         wskaźnik @p pnum ma wartość NULL lub indeks ma za dużą wartość.
  */
 char const * phnumGet(PhoneNumbers const *pnum, size_t idx);
+
+/**
+ * @brief Funkcja wyznacza przeciwobraz funkcji phfwdGet.
+ * Funkcja wyznacza tablicę prefiksów danego numeru, tj. posortowaną
+ * leksykograficznie tablicę takich x, że phfwdGet(x) = num.
+ * @param[in] pf - wskaźnik na strukturę przekierowań podanego numeru;
+ * @param[in] num - dany przekierowany numer.
+ * @return PhoneNumbers zawierający posortowaną leksykograficznie tablicę prefiksów.
+ */
+PhoneNumbers * phfwdGetReverse(PhoneForward const *pf, char const *num);
 
 #endif /* __PHONE_FORWARD_H__ */

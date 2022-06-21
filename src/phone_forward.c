@@ -7,7 +7,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "phone_forward.h"
@@ -722,7 +721,7 @@ static void phfwdRemove_rev_help(PhoneReversed *pf, char const *num) {
     remove_cell(pf, (char*) num);
 
     for (int i = 0; i < ALPHABET_SIZE; i++) {
-        if (pf->children[i]!=NULL) {
+        if (pf->children[i] != NULL) {
             phfwdRemove_rev_help(pf->children[i], num);
         }
     }
@@ -824,7 +823,7 @@ static size_t count_how_many_cells(PhoneReversed *current, char const *num,
  * @param[in] numsize - wielkość napisu;
  * @param[in] start - punkt, od którego zaczynamy przepisywanie.
  */
-static void string_copy(PhoneNumbers *answer, char*num, size_t count_cells,
+static void string_copy(PhoneNumbers *answer, char *num, size_t count_cells,
                         size_t numsize, size_t start) {
     for (size_t ii = start; ii < numsize + 1; ii++) {
         answer->table_of_phone_numbers[count_cells][ii] = num[ii];
@@ -1131,4 +1130,65 @@ char const * phnumGet(PhoneNumbers const *pnum, size_t idx) {
     else {
         return NULL;
     }
+}
+
+/**
+ * @brief Funkcja sprawdza, czy elementy x w tablicy są postaci phfwdGet(x) = num.
+ * Funkcja przystosowuje tablicę wygenerowaną przez phfwdReverse do warunku
+ * phfwdGet(x) = num. Funkcja testuje to sprawdzając wywołanie funkcji phfwdGet
+ * na każdym elemencie tablicy i jeśli element spełnia warunek phfwdGet(x) =
+ * num, element x zostaje przeniesiony do tablicy wynikowej.
+ * @param pf - wskaźnik na strukturę drzew;
+ * @param answer - PhoneNumbers wygenerowane przez phfwdReverse;
+ * @param num - dany przekierowany numer;
+ * @return PhoneNumbers zawierające przeciwobraz funkcji phfwdGet.
+ */
+static PhoneNumbers * check_by_get (PhoneForward const *pf,
+                                    PhoneNumbers *answer, char const *num) {
+    size_t rubbish = 0;
+    bool nothing = 0;
+
+    for (size_t i = 0; i < answer->size; i++) {
+        PhoneNumbers *pnum = phfwdGet(pf, answer->table_of_phone_numbers[i]);
+        if (!check_if_same((char*)phnumGet(pnum, 0), (char*)num)) {
+            rubbish++;
+        }
+        phnumDelete(pnum);
+    }
+
+    PhoneNumbers *new_answer = wider_allocation(answer->size - rubbish);
+    if (new_answer == NULL) {
+        return phnum_new_one();
+    }
+
+    size_t j = 0;
+    for (size_t i = 0; i < answer->size; i++) {
+        PhoneNumbers *pnum = phfwdGet(pf, answer->table_of_phone_numbers[i]);
+        if (check_if_same((char*)phnumGet(pnum, 0), (char*)num)) {
+            size_t size = count_size(answer->table_of_phone_numbers[i], &nothing);
+            new_answer->table_of_phone_numbers[j] =
+            realloc(new_answer->table_of_phone_numbers[j],
+                    (size + 1) * sizeof(char));
+            string_copy(new_answer, answer->table_of_phone_numbers[i], j, size, 0);
+            if (new_answer->table_of_phone_numbers[j] == NULL) {
+                return NULL;
+            }
+            j++;
+        }
+        phnumDelete(pnum);
+    }
+
+    phnumDelete(answer);
+    return new_answer;
+}
+
+PhoneNumbers * phfwdGetReverse(PhoneForward const *pf, char const *num) {
+    if (pf == NULL) {
+        return NULL;
+    }
+    if ((num == NULL) || (num[0] == '\0') || error((char*)num)) {
+        return phnum_new_one();
+    }
+    PhoneNumbers *answer = phfwdReverse(pf, num);
+    return check_by_get(pf, answer, num);
 }
