@@ -26,4 +26,4 @@ make
 
 make doc
 
-As result, executable file phone_forward and documentation are created.
+As result, the executable file phone_forward and documentation files are created.
